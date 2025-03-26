@@ -4,8 +4,8 @@ from fastapi import Depends, FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
-from db import User, create_db_and_tables
-from api import (
+from url_shortener.db import User, create_db_and_tables
+from url_shortener.api import (
     UserCreate,
     UserRead,
     UserUpdate,
@@ -15,7 +15,7 @@ from api import (
     router_management,
     router_statistics
 )
-from config import REDIS_HOST
+from url_shortener.config import REDIS_HOST
 
 
 @asynccontextmanager

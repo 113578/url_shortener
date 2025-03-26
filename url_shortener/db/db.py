@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from config import ASYNC_DATABASE_URL, SYNC_DATABASE_URL
+from url_shortener.config import ASYNC_DATABASE_URL, SYNC_DATABASE_URL
 from .models import Base, User
 
 

@@ -8,8 +8,8 @@ from fastapi_users.authentication import (
     JWTStrategy,
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
-from db import get_user_db, User
-from config import AUTH_TOKEN
+from url_shortener.db import get_user_db, User
+from url_shortener.config import AUTH_TOKEN
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):

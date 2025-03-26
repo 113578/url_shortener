@@ -3,7 +3,7 @@ import random
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from fastapi_cache import FastAPICache
-from db import CurrentURLs
+from url_shortener.db import CurrentURLs
 
 
 def generate_alias(url: str) -> str:

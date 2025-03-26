@@ -3,15 +3,15 @@ from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_cache.decorator import cache
 from celery.result import AsyncResult
-from celery_app import delete_expired_links
-from db import (
+from url_shortener.celery_app import delete_expired_links
+from url_shortener.db import (
     User,
     CurrentURLs,
     DeletedURLs,
     get_async_session
 )
-from api import current_active_user
-from utils import search_url
+from url_shortener.api import current_active_user
+from url_shortener.utils import search_url
 from .schemas import URLStatistics
 
 
@@ -65,7 +65,7 @@ async def get_statistics(
     url.celery_task_id = celery_task.id
 
     await session.commit()
-    await session.refresh()
+    await session.refresh(url)
 
     return URLStatistics(
         url=url.url,

@@ -6,18 +6,18 @@ from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_cache.decorator import cache
 from celery.result import AsyncResult
-from api import (
+from url_shortener.api import (
     current_active_user,
     current_active_optional_user
 )
-from celery_app import delete_expired_links
-from db import (
+from url_shortener.celery_app import delete_expired_links
+from url_shortener.db import (
     User,
     CurrentURLs,
     DeletedURLs,
     get_async_session
 )
-from utils import (
+from url_shortener.utils import (
     generate_alias,
     search_url,
     delete_redis_keys

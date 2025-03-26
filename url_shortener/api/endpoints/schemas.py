@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from config import LIFETIME
+from url_shortener.config import LIFETIME
 
 
 class CreateURL(BaseModel):

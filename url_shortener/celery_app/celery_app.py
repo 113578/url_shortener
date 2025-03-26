@@ -2,12 +2,12 @@ from typing import Union
 from datetime import datetime, timezone
 from celery import Celery
 from sqlalchemy import select, insert
-from db import (
+from url_shortener.db import (
     sync_session,
     CurrentURLs,
     DeletedURLs
 )
-from config import REDIS_HOST, REDIS_PORT_CELERY
+from url_shortener.config import REDIS_HOST, REDIS_PORT_CELERY
 
 
 celery = Celery(
