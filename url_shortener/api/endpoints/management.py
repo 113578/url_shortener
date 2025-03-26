@@ -70,7 +70,7 @@ async def shorten(
         if await search_url(session, url.alias):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail="Alias '{url.alias}' already exists! Try another one.",
+                detail=f"Alias '{url.alias}' already exists! Try another one.",
             )
 
     if not url.url.startswith('https'):

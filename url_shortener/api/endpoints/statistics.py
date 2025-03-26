@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -42,6 +43,9 @@ async def get_statistics(
     URLStatistics
         Объект со статистикой URL, включая количество кликов и дату последнего клика.
     """
+    # Имитация бурной деятельности для проверки кэша.
+    await asyncio.sleep(30)
+
     url = await search_url(session=session, alias=alias)
 
     if url is None:

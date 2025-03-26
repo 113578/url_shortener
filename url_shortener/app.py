@@ -15,7 +15,10 @@ from url_shortener.api import (
     router_management,
     router_statistics
 )
-from url_shortener.config import REDIS_HOST
+from url_shortener.config import (
+    REDIS_HOST_CACHE,
+    REDIS_PORT_CACHE
+)
 
 
 @asynccontextmanager
@@ -29,9 +32,9 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     ------
     None
     """
-    await create_db_and_tables()
+    # await create_db_and_tables()
 
-    redis = aioredis.from_url(f'redis://{REDIS_HOST}')
+    redis = aioredis.from_url(f'redis://{REDIS_HOST_CACHE}:{REDIS_PORT_CACHE}')
     FastAPICache.init(RedisBackend(redis), prefix='fastapi-cache')
 
     yield

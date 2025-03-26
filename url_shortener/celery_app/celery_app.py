@@ -7,13 +7,16 @@ from url_shortener.db import (
     CurrentURLs,
     DeletedURLs
 )
-from url_shortener.config import REDIS_HOST, REDIS_PORT_CELERY
+from url_shortener.config import (
+    REDIS_HOST_CELERY,
+    REDIS_PORT_CACHE
+)
 
 
 celery = Celery(
     'delete_expired_links',
-    broker=f'redis://{REDIS_HOST}:{REDIS_PORT_CELERY}/0',
-    backend=f'redis://{REDIS_HOST}:{REDIS_PORT_CELERY}/0'
+    broker=f'redis://{REDIS_HOST_CELERY}:{REDIS_PORT_CACHE}/0',
+    backend=f'redis://{REDIS_HOST_CELERY}:{REDIS_PORT_CACHE}/0'
 )
 celery.conf.timezone = 'UTC'
 

@@ -1,38 +1,99 @@
-version: '3.8'
-
 services:
+  app:
+    build:
+      context: .
+    container_name: app
+    environment:
+      PYTHONPATH: ${PYTHONPATH}
+      AUTH_TOKEN: ${AUTH_TOKEN}
+      LIFETIME: ${LIFETIME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      REDIS_HOST_CACHE: ${REDIS_HOST_CACHE}
+      REDIS_PORT_CACHE: ${REDIS_PORT_CACHE}
+      REDIS_HOST_CELERY: ${REDIS_HOST_CELERY}
+      REDIS_PORT_CELERY: ${REDIS_PORT_CELERY}
+    command: bash -c "/app/docker.sh"
+    ports:
+      - 8000:8000
+    networks:
+      - network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis-cache:
+        condition: service_started
+      redis-celery:
+        condition: service_started
+    restart: unless-stopped
+
   postgres:
-    image: postgres:latest
+    image: postgres:17.4
     container_name: postgres
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: mydatabase
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5432:5432"
+      - ${DB_PORT}:${DB_PORT}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - mynetwork
-  redis_cache:
-    image: redis:latest
-    container_name: redis_cache
+      - network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    restart: unless-stopped
+
+  redis-cache:
+    image: redis:7.4.2
+    container_name: redis-cache
+    environment:
+      REDIS_HOST: ${REDIS_HOST_CACHE}
+      REDIS_PORT: ${REDIS_PORT_CACHE}
     ports:
-      - "6379:6379"
+      - ${REDIS_PORT_CACHE}:${REDIS_PORT_CACHE}
+    volumes:
+      - redis_cache_data:/redis_cache/data
     networks:
-      - mynetwork
-  redis_celery:
-    image: redis:latest
-    container_name: redis_celery
+      - network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  redis-celery:
+    image: redis:7.4.2
+    container_name: redis-celery
+    environment:
+      REDIS_HOST: ${REDIS_HOST_CELERY}
+      REDIS_PORT: ${REDIS_PORT_CELERY}
     ports:
-      - "6380:6379"
+      - ${REDIS_PORT_CELERY}:${REDIS_PORT_CELERY}
+    volumes:
+      - redis_celery_data:/redis_celery/data
     networks:
-      - mynetwork
+      - network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
 volumes:
   postgres_data:
     driver: local
+  redis_cache_data:
+    driver: local
+  redis_celery_data:
+    driver: local
 
 networks:
-  mynetwork:
+  network:
     driver: bridge
