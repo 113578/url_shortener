@@ -46,7 +46,7 @@ async def get_statistics(
         Объект со статистикой URL, включая количество кликов и дату последнего клика.
     """
     # Имитация бурной деятельности для проверки кэша.
-    await asyncio.sleep(30)
+    await asyncio.sleep(10)
 
     url = await search_url(session=session, alias=alias)
 

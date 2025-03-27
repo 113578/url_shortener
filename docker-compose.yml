@@ -56,6 +56,7 @@ services:
     environment:
       REDIS_HOST: ${REDIS_HOST_CACHE}
       REDIS_PORT: ${REDIS_PORT_CACHE}
+    command: redis-server --port ${REDIS_PORT_CACHE}
     ports:
       - ${REDIS_PORT_CACHE}:${REDIS_PORT_CACHE}
     volumes:
@@ -74,6 +75,7 @@ services:
     environment:
       REDIS_HOST: ${REDIS_HOST_CELERY}
       REDIS_PORT: ${REDIS_PORT_CELERY}
+    command: redis-server --port ${REDIS_PORT_CELERY}
     ports:
       - ${REDIS_PORT_CELERY}:${REDIS_PORT_CELERY}
     volumes:
