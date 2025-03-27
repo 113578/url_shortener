@@ -22,6 +22,7 @@ from url_shortener.utils import (
     search_url,
     delete_redis_keys
 )
+from url_shortener.config import LIFETIME
 from .schemas import CreateURL, UpdateURL
 
 
@@ -146,11 +147,14 @@ async def redirect(
 
     AsyncResult(id=url.celery_task_id).revoke(terminate=True)
 
+    expire_at = url.expire_at + timedelta(seconds=int(LIFETIME))
+
     celery_task = delete_expired_links.apply_async(
         args=[url.alias],
         eta=url.expire_at
     )
     url.celery_task_id = celery_task.id
+    url.expire_at = expire_at
 
     await session.commit()
     await session.refresh(url)
@@ -204,12 +208,15 @@ async def update(
 
     AsyncResult(id=url.celery_task_id).revoke(terminate=True)
 
+    expire_at = url.expire_at + timedelta(seconds=int(LIFETIME))
+
     celery_task = delete_expired_links.apply_async(
         args=[url.alias],
         eta=url.expire_at,
         expires=3600
     )
     url.celery_task_id = celery_task.id
+    url.expire_at = expire_at
 
     await session.commit()
     await session.refresh(url)

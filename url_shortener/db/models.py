@@ -82,7 +82,7 @@ class DeletedURLs(Base):
     )
     alias: Mapped[str] = mapped_column(
         Text,
-        unique=True,
+        unique=False,
         nullable=False
     )
     created_at: Mapped[datetime] = mapped_column(
