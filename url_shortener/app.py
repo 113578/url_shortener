@@ -4,7 +4,7 @@ from fastapi import Depends, FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
-from url_shortener.db import User, create_db_and_tables
+from url_shortener.db import User
 from url_shortener.api import (
     UserCreate,
     UserRead,
@@ -32,8 +32,6 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     ------
     None
     """
-    # await create_db_and_tables()
-
     redis = aioredis.from_url(f'redis://{REDIS_HOST_CACHE}:{REDIS_PORT_CACHE}')
     FastAPICache.init(RedisBackend(redis), prefix='fastapi-cache')
 
@@ -98,7 +96,7 @@ async def authenticated_route(user: User = Depends(current_active_user)) -> dict
 
 
 @app.get('/')
-async def health_checl() -> dict:
+async def health_check() -> dict:
     """
     Проверяет состояние приложения.
 
